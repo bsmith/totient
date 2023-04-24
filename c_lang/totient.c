@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 /* The Euclidean Algorithm */
 long gcd(long a, long b)
@@ -17,7 +18,7 @@ long gcd(long a, long b)
 }
 
 /* Euler's totient (or phi) function counts the positive integers up to n that are relatively prime to n */
-long totient(long n)
+long totient_gcd(long n)
 {
 	if (n <= 0)
 		return 0;
@@ -40,6 +41,47 @@ long totient(long n)
 	long totient = multiplier * count;
 	/* printf("totient(n=%ld): multiplier=%ld count=%ld totient=%ld\n", n, multiplier, count, totient); */
 	return totient;
+}
+
+long isqrt(long n)
+{
+	double x_d = sqrt(n);
+	long x = x_d;
+	if (!(x*x <= n && (x+1)*(x+1) > n))
+		abort();
+	return x;
+}
+
+/* This version attempts to find prime factors */
+long totient(long n)
+{
+	// long orig_n = n;
+	if (n <= 0)
+		return 0;
+	// if (n == 1)
+	// 	return 1;
+
+	long multiplier = 1;
+	for (long k = 2; k <= isqrt(n); k += (k & 1 ? 2 : 1)) {
+		if (n % k == 0) {
+			long count = 0;
+			long k_pow = 1;
+			while (n % k == 0) {
+				n /= k;
+				k_pow *= k;
+				count++;
+			}
+			multiplier *= (k - 1) * k_pow / k;
+		}
+	}
+
+	/* n is a prime! */
+	if (n > 1)
+		multiplier *= n - 1;
+
+	// printf("totient(%ld)=%ld; n=%ld\n", orig_n, multiplier, n);
+
+	return multiplier;
 }
 
 void assert_eq_long(long actual, long expected)
@@ -75,12 +117,12 @@ void totient_check_first_10(void)
 void totient_sum_million(void)
 {
 	/* expected[i] = sum(totient(x) for x = 1 .. 10^i) */
-	long expecteds[] = { 0, 32, 3044, 304192, 30397486, 3039650754, 303963552392 };
+	long expecteds[] = { 0, 32, 3044, 304192, 30397486, 3039650754, 303963552392, 30396356427242, 303963551173008414 };
 	long sum = 0;
 	long limit = 1;
 	long n = 1;
 	clock_t start_clock = clock();
-	for (long i = 1; i <= 6; i++) {
+	for (long i = 1; i <= 8; i++) {
 		limit *= 10;
 		for (; n <= limit; n++) {
 			sum += totient(n);
@@ -89,7 +131,7 @@ void totient_sum_million(void)
 		printf("  time elapsed: %0.6f\n", (double)(clock() - start_clock)/CLOCKS_PER_SEC);
 		assert_eq_long(sum, expecteds[i]);
 	}
-	assert_eq_long(sum, 303963552392);
+	// assert_eq_long(sum, 303963552392);
 }
 
 int main(int argc, char **argv)
