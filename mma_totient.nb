@@ -1,0 +1,117 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='WolframDesktop 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       161,          7]
+NotebookDataLength[      3805,        109]
+NotebookOptionsPosition[      2732,         84]
+NotebookOutlinePosition[      3128,        100]
+CellTagsIndexPosition[      3085,         97]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"EchoTiming", "[", 
+  RowBox[{"ParallelSum", "[", 
+   RowBox[{
+    RowBox[{"EulerPhi", "[", "x", "]"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", "1", ",", "1000000000"}], "}"}]}], "]"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.891274188974926*^9, 3.891274224378222*^9}, {
+  3.891274399876814*^9, 3.891274411882415*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"fc7bba08-5693-43b1-89d8-f1436629f69c"],
+
+Cell[BoxData["348.381577`"], "EchoTiming",
+ CellChangeTimes->{
+  3.8912747609213047`*^9},ExpressionUUID->"f7a61d75-1991-465c-a36b-\
+18e59adad9e8"],
+
+Cell[BoxData["303963551173008414"], "Output",
+ CellChangeTimes->{{3.891274204084957*^9, 3.891274226660551*^9}, 
+   3.891274407422456*^9, 3.8912747609423018`*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"ee8be15e-1883-4757-a8da-e812c6da62df"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"EchoTiming", "[", 
+  RowBox[{"ParallelSum", "[", 
+   RowBox[{
+    RowBox[{"EulerPhi", "[", "x", "]"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", "1", ",", "10000000"}], "}"}]}], "]"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"EchoTiming", "[", 
+  RowBox[{"Sum", "[", 
+   RowBox[{
+    RowBox[{"EulerPhi", "[", "x", "]"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", "1", ",", "10000000"}], "}"}]}], "]"}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.891335617692566*^9, 3.891335626511718*^9}},
+ CellLabel->"In[10]:=",ExpressionUUID->"bf3090e4-e29b-4521-b42f-c6051669794e"],
+
+Cell[BoxData["2.872185`"], "EchoTiming",
+ CellChangeTimes->{
+  3.891335629835533*^9},ExpressionUUID->"9b2b9428-acb4-41fd-840d-\
+38f7a0394f00"],
+
+Cell[BoxData["30396356427242"], "Output",
+ CellChangeTimes->{{3.891335622051935*^9, 3.891335629847794*^9}},
+ CellLabel->"Out[10]=",ExpressionUUID->"6aa4a35c-2af9-479c-bbcd-c3ca95131487"],
+
+Cell[BoxData["18.097295`"], "EchoTiming",
+ CellChangeTimes->{
+  3.8913356480196466`*^9},ExpressionUUID->"0e10dba6-0be5-458c-b4c9-\
+cff7d81525ca"],
+
+Cell[BoxData["30396356427242"], "Output",
+ CellChangeTimes->{{3.891335622051935*^9, 3.891335648055091*^9}},
+ CellLabel->"Out[11]=",ExpressionUUID->"f98b8ea5-2ccd-4b34-a24e-ef722cf6e776"]
+}, Open  ]]
+},
+WindowSize->{808, 911},
+WindowMargins->{{44, Automatic}, {33, Automatic}},
+FrontEndVersion->"13.2 for Mac OS X ARM (64-bit) (January 31, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"aba396d7-94b3-4791-8aae-9a5d1bfcce2d"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[583, 22, 428, 10, 30, "Input",ExpressionUUID->"fc7bba08-5693-43b1-89d8-f1436629f69c"],
+Cell[1014, 34, 146, 3, 25, "EchoTiming",ExpressionUUID->"f7a61d75-1991-465c-a36b-18e59adad9e8"],
+Cell[1163, 39, 239, 3, 34, "Output",ExpressionUUID->"ee8be15e-1883-4757-a8da-e812c6da62df"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1439, 47, 606, 16, 52, "Input",ExpressionUUID->"bf3090e4-e29b-4521-b42f-c6051669794e"],
+Cell[2048, 65, 142, 3, 25, "EchoTiming",ExpressionUUID->"9b2b9428-acb4-41fd-840d-38f7a0394f00"],
+Cell[2193, 70, 186, 2, 34, "Output",ExpressionUUID->"6aa4a35c-2af9-479c-bbcd-c3ca95131487"],
+Cell[2382, 74, 145, 3, 25, "EchoTiming",ExpressionUUID->"0e10dba6-0be5-458c-b4c9-cff7d81525ca"],
+Cell[2530, 79, 186, 2, 57, "Output",ExpressionUUID->"f98b8ea5-2ccd-4b34-a24e-ef722cf6e776"]
+}, Open  ]]
+}
+]
+*)
+
