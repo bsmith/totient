@@ -62,7 +62,7 @@ long totient(long n)
 	// 	return 1;
 
 	long multiplier = 1;
-	for (long k = 2; k <= isqrt(n); k += (k & 1 ? 2 : 1)) {
+	for (long k = 2; k*k <= n; k += (k & 1 ? 2 : 1)) {
 		if (n % k == 0) {
 			long k_pow = 1;
 			n /= k;
