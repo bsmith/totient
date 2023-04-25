@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
+
+typedef long (*totient_func)(long);
 
 /* The Euclidean Algorithm */
 long gcd(long a, long b)
@@ -43,17 +46,8 @@ long totient_gcd(long n)
 	return totient;
 }
 
-long isqrt(long n)
-{
-	double x_d = sqrt(n);
-	long x = x_d;
-	if (!(x*x <= n && (x+1)*(x+1) > n))
-		abort();
-	return x;
-}
-
 /* This version attempts to find prime factors */
-long totient(long n)
+long totient_factors(long n)
 {
 	// long orig_n = n;
 	if (n <= 0)
@@ -104,7 +98,7 @@ void gcd_random_checks(void)
 	}
 }
 
-void totient_check_first_10(void)
+void totient_check_first_10(totient_func totient)
 {
 	long expecteds[] = { 0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4 };
 	for (int i = 0; i < sizeof(expecteds)/sizeof(*expecteds); i++) {
@@ -113,7 +107,7 @@ void totient_check_first_10(void)
 	}
 }
 
-void totient_sum_million(void)
+void totient_sum_million(totient_func totient)
 {
 	/* expected[i] = sum(totient(x) for x = 1 .. 10^i) */
 	long expecteds[] = { 0, 32, 3044, 304192, 30397486, 3039650754, 303963552392, 30396356427242, 303963551173008414 };
@@ -149,6 +143,22 @@ void totient_sum_million(void)
 
 int main(int argc, char **argv)
 {
+	totient_func totient = NULL;
+
+	if (argc != 2) {
+		fprintf(stderr, "%s: expected 1 argument\n", argv[0]);
+		return 1;
+	} else if (argc == 2) {
+		if (strcmp("gcd", argv[1]) == 0)
+			totient = totient_gcd;
+		else if (strcmp("factors", argv[1]) == 0)
+			totient = totient_factors;
+		else {
+			fprintf(stderr, "first argument should be one of: gcd, factors\n");
+			return 1;
+		}
+	}
+
 	printf("gcd: simple checks\n");
 	assert_eq_long(gcd(12,24), 12);
 	assert_eq_long(gcd(5*7,7*7), 7);
@@ -158,10 +168,10 @@ int main(int argc, char **argv)
 	gcd_random_checks();
 
 	printf("totient: checking first 10\n");
-	totient_check_first_10();
+	totient_check_first_10(totient);
 
 	printf("totient: summing first million\n");
-	totient_sum_million();
+	totient_sum_million(totient);
 
 	printf("completed\n");
 
