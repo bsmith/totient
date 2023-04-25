@@ -53,8 +53,6 @@ int64_t totient_factors(int64_t n)
 	// int64_t orig_n = n;
 	if (n <= 0)
 		return 0;
-	// if (n == 1)
-	// 	return 1;
 
 	int64_t multiplier = 1;
 	for (int64_t k = 2; k*k <= n; k += (k & 1 ? 2 : 1)) {
@@ -76,6 +74,55 @@ int64_t totient_factors(int64_t n)
 	// printf("totient(%ld)=%ld; n=%ld\n", orig_n, multiplier, n);
 
 	return multiplier;
+}
+
+int64_t totient_sieve(int64_t n)
+{
+	static int initialized = 0;
+	static const long N = 1000000;
+	static long phi[N + 1];
+	if (!initialized) {
+		for (int i = 0; i <= N; i++)
+			phi[i] = i;
+		for (int i = 2; i <= N; i++)
+			if (phi[i] == i)
+				for (int j = i; j <= N; j += i)
+					phi[j] -= phi[j] / i;
+		initialized = 1;
+	}
+	if (n <= N) {
+		// printf("totient(%jd)=%jd\n", (intmax_t)n, (intmax_t)phi[n]);
+		return phi[n];
+	}
+	else {
+		int64_t multiplier = 1;
+		if (n % 2 == 0) {
+			n /= 2;
+			while (n % 2 == 0) {
+				multiplier *= 2;
+				n /= 2;
+			}
+		}
+		if (n <= N)
+			return multiplier * phi[n];
+
+		for (int64_t i = 3; i * i <= n; i += 2) {
+			if (phi[i] != i-1) /* i prime! */
+				continue;
+			if (n % i == 0) {
+				multiplier *= i-1;
+				n /= i;
+				while (n % i == 0) {
+					multiplier *= i;
+					n /= i;
+				}
+				if (n <= N)
+					return multiplier * phi[n];
+			}
+		}
+
+		return multiplier * totient_factors(n);
+	}
 }
 
 void assert_eq_int64(int64_t actual, int64_t expected)
@@ -154,8 +201,10 @@ int main(int argc, char **argv)
 			totient = totient_gcd;
 		else if (strcmp("factors", argv[1]) == 0)
 			totient = totient_factors;
+		else if (strcmp("sieve", argv[1]) == 0)
+			totient = totient_sieve;
 		else {
-			fprintf(stderr, "first argument should be one of: gcd, factors\n");
+			fprintf(stderr, "first argument should be one of: gcd, factors, sieve\n");
 			return 1;
 		}
 	}
