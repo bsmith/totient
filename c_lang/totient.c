@@ -130,7 +130,21 @@ void totient_sum_million(void)
 		printf("  time elapsed: %0.6f\n", (double)(clock() - start_clock)/CLOCKS_PER_SEC);
 		assert_eq_long(sum, expecteds[i]);
 	}
-	// assert_eq_long(sum, 303963552392);
+	/* now run until 10 seconds have elapsed */
+	while ((clock() - start_clock) < 10*CLOCKS_PER_SEC) {
+		/* We've done n totients in time t seconds */
+		/* So we're doing n/t totients per second */
+		/* In the remaining time Rt, we can therefore do Rt*n/t totients */
+		/* BUT Rt = 10 - t, so Rt*n/t==(10-t)*n/t==(10/t-1)*n XXX */
+		/* Let's do half of that */
+		double time_elapsed = (double)(clock() - start_clock)/CLOCKS_PER_SEC;
+		double remaining_totients = (10 / time_elapsed - 1) * n;
+		limit += remaining_totients < 200 ? 100 : remaining_totients / 2;
+		for (; n <= limit; n++)
+			sum += totient(n);
+		printf("  totient sum: sum=%ld remaining_totients=%.2f limit=%ld n=%ld\n", sum, remaining_totients, limit, n);
+		printf("  time elapsed: %0.6f\n", (double)(clock() - start_clock)/CLOCKS_PER_SEC);
+	}
 }
 
 int main(int argc, char **argv)
