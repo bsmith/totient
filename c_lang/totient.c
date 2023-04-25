@@ -6,15 +6,15 @@
 /* The Euclidean Algorithm */
 long gcd(long a, long b)
 {
-	while (a != b && a > 0) {
-		/* printf("gcd(%ld,%ld)\n", a, b); */
-		long larger = a > b ? a : b;
-		long smaller = a > b ? b : a;
+	long larger = a > b ? a : b;
+	long smaller = a > b ? b : a;
+	while (larger != smaller && smaller > 0) {
+		/* printf("gcd(%ld,%ld)\n", larger, smaller); */
 		long rem = larger % smaller;
-		a = rem;
-		b = smaller;
+		larger = smaller;
+		smaller = rem;
 	}
-	return b;
+	return larger;
 }
 
 /* Euler's totient (or phi) function counts the positive integers up to n that are relatively prime to n */
@@ -64,14 +64,13 @@ long totient(long n)
 	long multiplier = 1;
 	for (long k = 2; k <= isqrt(n); k += (k & 1 ? 2 : 1)) {
 		if (n % k == 0) {
-			long count = 0;
 			long k_pow = 1;
+			n /= k;
 			while (n % k == 0) {
 				n /= k;
 				k_pow *= k;
-				count++;
 			}
-			multiplier *= (k - 1) * k_pow / k;
+			multiplier *= (k - 1) * k_pow;
 		}
 	}
 
@@ -122,7 +121,7 @@ void totient_sum_million(void)
 	long limit = 1;
 	long n = 1;
 	clock_t start_clock = clock();
-	for (long i = 1; i <= 8; i++) {
+	for (long i = 1; i <= 7; i++) {
 		limit *= 10;
 		for (; n <= limit; n++) {
 			sum += totient(n);
