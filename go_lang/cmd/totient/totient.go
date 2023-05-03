@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func totient_factors(n int64) int64 {
 	if n <= 0 {
@@ -51,37 +54,72 @@ func totient_check_first_10(totient totient_func) {
 	}
 }
 
-func totient_sum_million(totient totient_func) {
+func totient_sum_serial(totient totient_func, limit int64) {
 	var sum int64 = 0
-	for i := int64(1); i <= 1000000; i++ {
+	start := time.Now()
+	for i := int64(1); i <= limit; i++ {
 		sum += totient(i)
 	}
-	expected := int64(303963552392)
-	assert_eq_int64(sum, expected)
+	if limit == 1000000 {
+		expected := int64(303963552392)
+		assert_eq_int64(sum, expected)
+	}
 	fmt.Println("sum of first million totients =", sum)
+	fmt.Println("  time elapsed:", time.Since(start))
 }
 
 func totient_sum_goroutine(totient totient_func, limit int64) {
-	responses := make(chan int64, 1)
+	numWorkers := 4
+	start := time.Now()
+	responses := make(chan []int64, numWorkers)
+	finishes := make(chan bool, numWorkers)
+
+	worker := func(start int64, end int64) {
+		values := make([]int64, 0, end-start+1)
+		for i := int64(1); i <= limit; i++ {
+			values = append(values, totient(i))
+		}
+		responses <- values
+		finishes <- true
+	}
+
+	workersStarted := 0
+	for start := int64(1); start <= limit; start += limit / int64(numWorkers) {
+		end := start + limit/int64(numWorkers) - 1
+		if end > limit {
+			end = limit
+		}
+		go worker(start, end)
+		workersStarted++
+	}
 
 	go func() {
-		for i := int64(1); i <= limit; i++ {
-			responses <- totient(i)
+		defer close(responses)
+		count := workersStarted
+		for count > 0 {
+			<-finishes
+			count--
 		}
-		close(responses)
 	}()
 
 	sum := int64(0)
-	for value := range responses {
-		sum += value
+	for values := range responses {
+		for _, value := range values {
+			sum += value
+		}
 	}
 	fmt.Println("Sum of first million totients =", sum)
+	fmt.Println("  time elapsed:", time.Since(start))
 }
 
 func main() {
 	fmt.Println("Hello, world.")
 	// fmt.Println("totient(7) =", totient_factors(7))
 	totient_check_first_10(totient_factors)
-	totient_sum_million(totient_factors)
+	fmt.Println("Serial")
+	totient_sum_serial(totient_factors, int64(1000000))
+	totient_sum_serial(totient_factors, int64(10000000))
+	fmt.Println("Parallel")
 	totient_sum_goroutine(totient_factors, int64(1000000))
+	totient_sum_goroutine(totient_factors, int64(10000000))
 }
