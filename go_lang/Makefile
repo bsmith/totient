@@ -1,6 +1,9 @@
+GO=go
+GOFLAGS=-v
+
 .PHONY: all
 all:
-	go build -x -v ./cmd/totient
+	$(GO) build $(GOFLAGS) ./cmd/totient
 
 .PHONY: clean
 clean:
